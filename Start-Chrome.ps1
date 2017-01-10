@@ -36,6 +36,10 @@
 	.Example
 	Start-Chrome -Incognito -Maximized -Browse 'www.google.com' -BrowseMultiple @('127.0.0.1','www.microsoft.com') -S 'search keywords' -SearchMultiple @('search 1','search')	
 #>
+
+# Setting Alias for Google Chrome. Worked better then just using the path when invoking an expression
+New-Alias Chrome "$ENV:ProgramFiles (x86)\Google\Chrome\Application\chrome.exe"
+
 function Start-Chrome {
     param
     (
@@ -52,13 +56,15 @@ function Start-Chrome {
         [Alias("SM")][string[]][ValidateNotNullOrEmpty()]$SearchMultiple,
         [Alias("BM")][string[]][ValidateNotNullOrEmpty()]$BrowseMultiple
     )
-	if($Help -and ($Incognito -or $Restore -or $Search -or $SearchMultiple -or $Browse -or $BrowseMultiple)) { 
-		Write-Host "
-		By declaring the -Help parameter all your other parameters are being ignored. 
-		Below you will find the requested Help Page. To excecute the other parameters enter a new command without -Help.
+
+    if($Help -and ($Incognito -or $Restore -or $Search -or $SearchMultiple -or $Browse -or $BrowseMultiple)) { 
+	Write-Host "
+	By declaring the -Help parameter all your other parameters are being ignored. 
+	Below you will find the requested Help Page. To excecute the other parameters enter a new command without -Help.
 		
-		"
-	}
+	"
+    }
+
     if($Help) {
         Write-Host "Help page
 
@@ -83,14 +89,16 @@ function Start-Chrome {
         
         NOTE: You can only use one Start Option and one Window Option, but you can use multiple parameterss.
 
-        EXAMPLE: Start-Google -Incognito -Fullscreen -Browse 'www.google.com' -SearchMultiple @('search1','search2')
+        EXAMPLE: Start-Chrome -Incognito -Fullscreen -Browse 'www.google.com' -SearchMultiple @('search1','search2')
 	"
 	return
     }
+
     if($Incognito -and $Restore) {
         Write-Error -Message "Chrome cannot be started with both the -Incognito and the -Restore option." -RecommendedAction "Start Chrome with one of these options."
         return
     }
+
     if($Maximized -and $Fullscreen) {
     	Write-Error -Message "Chrome cannot be started with both the -Maximezed and the -Fullscreen option." -RecommendedAction "Start Chrome with one of these options."
 	return
