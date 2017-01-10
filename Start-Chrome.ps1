@@ -12,11 +12,11 @@
 	.Parameter Restore | R
 	Open Chrome and restore tabs of previous Chrome session
 
-    .Parameter Maximized | M
-    Open Chrome in a maximized window
+	.Parameter Maximized | M
+    	Open Chrome in a maximized window
 
-    .Parameter Fullscreen | F
-    Open Chrome in fullscreen, as if the user pressed F11 right after startup.
+    	.Parameter Fullscreen | F
+    	Open Chrome in fullscreen, as if the user pressed F11 right after startup.
 	
 	.Parameter Search | S
 	Open Chrome and start a given search
@@ -43,8 +43,8 @@ function Start-Chrome {
         [Alias("I")][switch]$Incognito,
         [Alias("R")][switch]$Restore,
 	
-		[Alias("M")][switch]$Maximized,
-		[Alias("F")][switch]$Fullscreen,
+	[Alias("M")][switch]$Maximized,
+	[Alias("F")][switch]$Fullscreen,
 
         [Alias("S")][string][ValidateNotNullOrEmpty()]$Search,
         [Alias("B")][string][ValidateNotNullOrEmpty()]$Browse,
@@ -71,9 +71,9 @@ function Start-Chrome {
         -Incognito: Start Chrome in Incognito mode.
         -Restore: Start Chrome and open tabs from last session.
         
-	    Window Options:
-	    -Maximized: Start Chrome in a maximized screen.
-	    -Fullscreen: Start Chrome in fullscreen, as if the user pressed F11 right after startup.
+	Window Options:
+	-Maximized: Start Chrome in a maximized screen.
+	-Fullscreen: Start Chrome in fullscreen, as if the user pressed F11 right after startup.
 
         Paramaters:
         -Search [string]: Enter a string of text to search for it in Google in a new tab in Chrome.
@@ -84,8 +84,8 @@ function Start-Chrome {
         NOTE: You can only use one Start Option and one Window Option, but you can use multiple parameterss.
 
         EXAMPLE: Start-Google -Incognito -Fullscreen -Browse 'www.google.com' -SearchMultiple @('search1','search2')
-		"
-		return
+	"
+	return
     }
     if($Incognito -and $Restore) {
         Write-Error -Message "Chrome cannot be started with both the -Incognito and the -Restore option." -RecommendedAction "Start Chrome with one of these options."
@@ -96,7 +96,7 @@ function Start-Chrome {
 	return
     }
 	
-	# Declaring default variables
+    # Declaring default variables
     $_command = ""
     
     $_incognito = "--incognito"
@@ -112,47 +112,47 @@ function Start-Chrome {
     # Chrome Starting Options
 
     if($Fullscreen -and ($SearchMultiple -or $BrowseMultiple)) {
-        $_option = $_maximized
-		Write-Error -Message "Fullscreen mode does not work when opening multiple tabs. Starting Chrome in Maximized mode instead" -RecommendedAction "Next time, when using -BrowseMultiple or -SearchMultiple start Chrome with -Maximized or no Window option."
-	}
-	elseif($Fullscreen) { $_option = $_fullscreen }
+    	$_option = $_maximized
+	Write-Error -Message "Fullscreen mode does not work when opening multiple tabs. Starting Chrome in Maximized mode instead" -RecommendedAction "Next time, when using -BrowseMultiple or -SearchMultiple start Chrome with -Maximized or no Window option."
+    }
+    elseif($Fullscreen) { $_option = $_fullscreen }
     
-	if($Maximized) { $_option = $_maximized }
+    if($Maximized) { $_option = $_maximized }
 
     if($Restore) { $_option += " " + $_restore }
     if($Incognito) { $_option += " " + $_incognito }
     
-	if(!$Search -and !$SearchMultiple -and !$Browse -and !$BrowseMultiple) {
-		$_expr = "Chrome $_option"
+    if(!$Search -and !$SearchMultiple -and !$Browse -and !$BrowseMultiple) {
+	$_expr = "Chrome $_option"
         Invoke-Expression $_expr
-	}
+    }
 	
     # Setting and excecuting Search and Browse commands
     if($Browse) { 
-		$_command = "`"" + (($Browse + "`"") -replace ' ','%20')
+	$_command = "`"" + (($Browse + "`"") -replace ' ','%20')
         $_expr = "Chrome $_option $_command"
-		Invoke-Expression $_expr
-	}
+	Invoke-Expression $_expr
+    }
         
     if($BrowseMultiple) {
         foreach($b in $BrowseMultiple) {
             $_command = "`"" + (($b + "`"") -replace ' ','%20')
-			$_expr = "Chrome $_option $_command"
-			Invoke-Expression $_expr		      
+	    $_expr = "Chrome $_option $_command"
+	    Invoke-Expression $_expr		      
         }
     }
 
     if($Search) { 
-		$_command = "`""  + (($_searchUrl + $Search + "`"") -replace ' ','%20') 
+	$_command = "`""  + (($_searchUrl + $Search + "`"") -replace ' ','%20') 
         $_expr = "Chrome $_option $_command"
-		Invoke-Expression $_expr	
+	Invoke-Expression $_expr	
     }
 
     if($SearchMultiple) {
         foreach($s in $SearchMultiple) {
             $_command = "`""  + (($_searchUrl + $s + "`"") -replace ' ','%20') 
-			$_expr = "Chrome $_option $_command"
-			Invoke-Expression $_expr
+	    $_expr = "Chrome $_option $_command"
+	    Invoke-Expression $_expr
         }
     }
 }
